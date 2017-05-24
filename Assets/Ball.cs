@@ -10,7 +10,7 @@ namespace Assets
         {
             INITIAL, THROWN, FINAL
         }
-
+        
         Status status = Status.INITIAL;
         // Use this for initialization
         void Start()
@@ -35,15 +35,33 @@ namespace Assets
 
         void OnCollisionEnter2D(Collision2D col)
         {
-            if (col.gameObject.transform.tag !="Untagged" && status == Status.THROWN)
+            if (col.gameObject.transform.tag != "wall" && status == Status.THROWN)
             {
-                this.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
-                Main.Spawned = false;
-                status = Status.FINAL;
-            }
-            else if(col.gameObject.tag == "death")
+                if (col.gameObject.transform.tag == this.gameObject.transform.tag)
+                {
+                    Debug.Log("am gasit abaldasdasd as");
+                    Destroy(col.gameObject);
+                    Destroy(this.gameObject);
+                }
+                else if (col.gameObject.tag == "death")
+                {
+                    Main.Spawned = false;
+                    Destroy(this.gameObject);
+                }
+                else
+                {   
+                    this.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                    Main.Spawned = false;
+                    status = Status.FINAL;
+                }
+            }        
+        }
+        
+
+        void OnCollisionExit2D(Collision2D col)
+        {
+            if(col.gameObject.tag != "wall")
             {
-                Main.Spawned = false;
                 Destroy(this.gameObject);
             }
         }
