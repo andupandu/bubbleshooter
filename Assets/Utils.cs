@@ -12,5 +12,11 @@ namespace Assets
         {
             return new Vector2(v.x, v.y);
         }
+
+        public static int GetRandom(int min, int max)
+        {
+            System.Random r = new System.Random();
+            return r.Next(min, max);
+        }
     }
 }

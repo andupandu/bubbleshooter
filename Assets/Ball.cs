@@ -12,7 +12,6 @@ namespace Assets
         }
 
         Status status = Status.INITIAL;
-        Vector3 vectorTO = new Vector3(0, 0, 0);
         // Use this for initialization
         void Start()
         {
@@ -25,16 +24,23 @@ namespace Assets
             if (status == Status.INITIAL && Input.GetMouseButton(0))
             {
                 {
-                    vectorTO = Utils.V3ToV2(Camera.main.ScreenToWorldPoint(Input.mousePosition)) - Utils.V3ToV2(transform.position);
+                    var vectorTO = Utils.V3ToV2(Camera.main.ScreenToWorldPoint(Input.mousePosition)) - Utils.V3ToV2(transform.position);
+                    this.GetComponent<Rigidbody2D>().AddForce(vectorTO.normalized * 0.1f);
                     status = Status.THROWN;
                 }
             }
 
-            if (status == Status.THROWN)
-            {
-                this.transform.Translate(vectorTO * Time.deltaTime);
-            }
+
         }
 
+        void OnCollisionEnter2D(Collision2D col)
+        {
+            if (col.gameObject.transform.tag.Contains("ball") && status == Status.THROWN)
+            {
+                this.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                Main.Spawned = false;
+                status = Status.FINAL;
+            }
+        }
     }
 }
