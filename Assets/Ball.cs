@@ -10,7 +10,7 @@ namespace Assets
         {
             INITIAL, THROWN, FINAL
         }
-        
+        Vector2 vectorTO;
         Status status = Status.INITIAL;
         // Use this for initialization
         void Start()
@@ -24,8 +24,8 @@ namespace Assets
             if (status == Status.INITIAL && Input.GetMouseButton(0))
             {
                 {
-                    var vectorTO = Utils.V3ToV2(Camera.main.ScreenToWorldPoint(Input.mousePosition)) - Utils.V3ToV2(transform.position);
-                    this.GetComponent<Rigidbody2D>().AddForce(vectorTO.normalized * 0.1f);
+                    vectorTO = Utils.V3ToV2(Camera.main.ScreenToWorldPoint(Input.mousePosition)) - Utils.V3ToV2(transform.position);
+                    this.GetComponent<Rigidbody>().AddForce(vectorTO.normalized * 0.5f);
                     status = Status.THROWN;
                 }
             }
@@ -33,13 +33,13 @@ namespace Assets
 
         }
 
-        void OnCollisionEnter2D(Collision2D col)
+        void OnCollisionEnter(Collision col)
         {
             if (col.gameObject.transform.tag != "wall" && status == Status.THROWN)
-            {
+            { 
                 if (col.gameObject.transform.tag == this.gameObject.transform.tag)
                 {
-                    Debug.Log("am gasit abaldasdasd as");
+                    Main.Spawned = false;
                     Destroy(col.gameObject);
                     Destroy(this.gameObject);
                 }
@@ -49,21 +49,19 @@ namespace Assets
                     Destroy(this.gameObject);
                 }
                 else
-                {   
-                    this.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeAll;
+                {
+                    
+                    this.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                    this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
                     Main.Spawned = false;
                     status = Status.FINAL;
                 }
-            }        
-        }
-        
-
-        void OnCollisionExit2D(Collision2D col)
-        {
-            if(col.gameObject.tag != "wall")
-            {
-                Destroy(this.gameObject);
             }
+            else
+            {
+                vectorTO = vectorTO.normalized - Utils.V3ToV2(col.transform.position).normalized;
+                this.GetComponent<Rigidbody>().AddForce(Utils.V3ToV2(vectorTO.normalized * 0.5f));
+            }        
         }
     }
 }
