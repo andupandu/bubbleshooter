@@ -13,11 +13,12 @@ namespace Assets
         {
             return new Vector3(StartX, StartY, 0);
         }
+
         List<Sprite> BallImages;
         public static bool Spawned = false;
 
         public GameObject ballPrefab;
-
+        public bool test = false;
         // Use this for initialization
         void Start()
         {
