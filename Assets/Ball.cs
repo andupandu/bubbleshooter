@@ -27,6 +27,7 @@ namespace Assets
                     vectorTO = Utils.V3ToV2(Camera.main.ScreenToWorldPoint(Input.mousePosition)) - Utils.V3ToV2(transform.position);
                     this.GetComponent<Rigidbody>().AddForce(vectorTO.normalized * 0.5f);
                     status = Status.THROWN;
+                    Destroy(this.gameObject.transform.GetChild(0).gameObject);
                 }
             }
 
